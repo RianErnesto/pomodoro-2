@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Header from "@/components/ui/header";
+import { PomodoroProvider } from "@/contexts/pomodoro.context";
+import Favicon from "@/components/Favicon";
+import Title from "@/components/Title";
+import { ThemeProvider } from "@/contexts/theme.context";
+import { AlarmProvider } from "@/contexts/alarm.context";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,12 +30,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html lang="pt">
+      <AlarmProvider>
+        <PomodoroProvider>
+          <Title />
+          <Favicon />
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+          >
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Header />
+              {children}
+            </ThemeProvider>
+          </body>
+        </PomodoroProvider>
+      </AlarmProvider>
     </html>
   );
 }
