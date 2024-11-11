@@ -7,20 +7,23 @@ import { Switch } from "./switch";
 import { Label } from "./label";
 import { Plus, Minus } from "lucide-react";
 import { Input } from "./input";
+import useConfigurations from "@/hooks/useConfigurations.hook";
 
 export default function Menu() {
   const {
     startCounting,
     status,
     resetCounting,
-    toggleHideTimeOnTitle,
     increaseRepeats,
     decreaseRepeats,
-    configurations,
     repeats,
-    changeInitialRepeats,
-    toggleAlwaysStartWithInitialRepeats,
   } = usePomodoro();
+  const {
+    changeInitialRepeats,
+    configurations,
+    toggleAlwaysStartWithInitialRepeats,
+    toggleHideTimeOnTitle,
+  } = useConfigurations();
 
   return (
     <aside className="border-l border-black/15 h-full px-4 py-2 space-y-4 dark:border-white/15">
@@ -31,14 +34,18 @@ export default function Menu() {
           <Label className="text-sm" htmlFor="hide-timer">
             Hide Timer on Title
           </Label>
-          <Switch onCheckedChange={toggleHideTimeOnTitle} id="hide-timer" />
+          <Switch
+            checked={configurations.hideTimeOnTitle}
+            onCheckedChange={toggleHideTimeOnTitle}
+            id="hide-timer"
+          />
         </div>
         <div className="flex gap-2 items-center justify-between">
           <Label className="text-sm" htmlFor="start-with-initial-repeats">
             Start with Initial Repeats
           </Label>
           <Switch
-            defaultChecked={configurations.alwaysStartWithInitialRepeats}
+            checked={configurations.alwaysStartWithInitialRepeats}
             onCheckedChange={toggleAlwaysStartWithInitialRepeats}
             id="start-with-initial-repeats"
           />

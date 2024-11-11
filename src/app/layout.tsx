@@ -7,6 +7,7 @@ import Favicon from "@/components/Favicon";
 import Title from "@/components/Title";
 import { ThemeProvider } from "@/contexts/theme.context";
 import { AlarmProvider } from "@/contexts/alarm.context";
+import ConfigurationProvider from "@/contexts/configuration.context";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,25 +32,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt">
-      <AlarmProvider>
-        <PomodoroProvider>
-          <Title />
-          <Favicon />
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
-          >
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
+      <ConfigurationProvider>
+        <AlarmProvider>
+          <PomodoroProvider>
+            <Title />
+            <Favicon />
+            <body
+              className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
             >
-              <Header />
-              {children}
-            </ThemeProvider>
-          </body>
-        </PomodoroProvider>
-      </AlarmProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <Header />
+                {children}
+              </ThemeProvider>
+            </body>
+          </PomodoroProvider>
+        </AlarmProvider>
+      </ConfigurationProvider>
     </html>
   );
 }

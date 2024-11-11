@@ -20,6 +20,10 @@ export function minutesToSeconds(minutes: number): number {
   return minutes * 60;
 }
 
+export function secondsToMinutes(seconds: number): number {
+  return parseFloat((seconds / 60).toFixed(2));
+}
+
 export function formatTime(time: number): string {
   return time.toString().padStart(2, "0");
 }

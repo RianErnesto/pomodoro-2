@@ -4,14 +4,23 @@ import { TimeContextType } from "@/types/Time.type";
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { StatusType } from "@/types/Status.type";
 import { minutesToSeconds } from "@/utils/time.util";
-import { PomodoroConfigurations } from "@/types/Configuration.type";
 import useAlarm from "@/hooks/useAlarm.hook";
+import { getDateDiffInSeconds, sumMinutesToDate } from "@/utils/date.util";
+import usePomodoroLocalStorage from "@/hooks/usePomodoroLocalStorage.hook";
+import useConfigurations from "@/hooks/useConfigurations.hook";
 
 export const TimeContext = createContext<TimeContextType>(
   {} as TimeContextType
 );
 
 export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
+  const { configurations } = useConfigurations();
+  const {
+    sumPomodoroCounter,
+    sumSecondsFocused,
+    sumSecondsResting,
+    saveConfigurations,
+  } = usePomodoroLocalStorage();
   const { playAlarm } = useAlarm();
   const [status, setStatus] = useState<StatusType>("stopped");
   const [repeats, setRepeats] = useState<number>(1);
@@ -25,11 +34,7 @@ export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
   const [currentCounterTime, setCurrentCounterTime] = useState<number>(
     minutesToSeconds(pomodoroTimes.focusTime)
   );
-  const [configurations, setConfigurations] = useState<PomodoroConfigurations>({
-    hideTimeOnTitle: false,
-    initialRepeats: 1,
-    alwaysStartWithInitialRepeats: true,
-  });
+  const [runningDate, setRunningDate] = useState<Date>(new Date());
 
   const increaseRepeats = () => {
     setRepeats((prevState) => prevState + 1);
@@ -41,17 +46,13 @@ export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
 
   const startCounting = () => {
     if (pomodoroTimes.focusTime === 0) return;
+    setRunningDate(sumMinutesToDate(new Date(), pomodoroTimes.focusTime));
     setCurrentCounterTime(() => minutesToSeconds(pomodoroTimes.focusTime));
     setStatus("working");
     if (configurations.alwaysStartWithInitialRepeats) {
-      setRepeats(configurations.initialRepeats - 1);
+      setRepeats(configurations.initialRepeats);
       return;
     }
-    if (repeats < 1) {
-      setRepeats(0);
-      return;
-    }
-    setRepeats((prevState) => prevState - 1);
   };
 
   const resetCounting = () => {
@@ -71,56 +72,58 @@ export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const changeInitialRepeats = (value: number) => {
-    setConfigurations((prevState) => ({
-      ...prevState,
-      initialRepeats: value,
-    }));
-    setRepeats(value);
-  };
+  function checkRunning() {
+    const currentTime = new Date();
+    const diffInSeconds = getDateDiffInSeconds(runningDate, currentTime);
 
-  const toggleAlwaysStartWithInitialRepeats = (value: boolean) => {
-    setConfigurations((prevState) => ({
-      ...prevState,
-      alwaysStartWithInitialRepeats: value,
-    }));
-  };
+    // Simply reduce timer
+    if (diffInSeconds >= 1) {
+      setCurrentCounterTime(() => diffInSeconds);
+      if (status === "working") sumSecondsFocused(1);
+      if (status === "resting") sumSecondsResting(1);
+      return;
+    }
 
-  const toggleHideTimeOnTitle = (value: boolean) => {
-    setConfigurations((prevState) => ({
-      ...prevState,
-      hideTimeOnTitle: value,
-    }));
-  };
+    playAlarm();
+
+    if (repeats >= 0 && status === "working") {
+      setStatus("resting");
+      setRunningDate(() =>
+        sumMinutesToDate(currentTime, pomodoroTimes.restTime)
+      );
+      setCurrentCounterTime(() => minutesToSeconds(pomodoroTimes.restTime));
+      return;
+    }
+
+    if (repeats > 0 && status === "resting") {
+      setStatus("working");
+      setRunningDate(() =>
+        sumMinutesToDate(currentTime, pomodoroTimes.focusTime)
+      );
+      decreaseRepeats();
+      setCurrentCounterTime(() => minutesToSeconds(pomodoroTimes.focusTime));
+      sumPomodoroCounter();
+      return;
+    }
+
+    resetCounting();
+    sumPomodoroCounter();
+    return;
+  }
 
   useEffect(() => {
     if (status !== "stopped") {
       const interval = setInterval(() => {
-        setCurrentCounterTime((prevState) => {
-          if (prevState > 0) return prevState - 1;
-          else {
-            if (repeats >= 0) {
-              if (status === "working") {
-                playAlarm();
-                setStatus("resting");
-                return minutesToSeconds(pomodoroTimes.restTime);
-              } else {
-                playAlarm();
-                setStatus("working");
-                return minutesToSeconds(pomodoroTimes.focusTime);
-              }
-            } else {
-              playAlarm();
-              resetCounting();
-              return 0;
-            }
-          }
-        });
+        checkRunning();
       }, 1000);
 
       return () => clearInterval(interval);
     }
   }, [status, currentCounterTime]);
+
+  useEffect(() => {
+    saveConfigurations(configurations);
+  }, [configurations]);
 
   return (
     <TimeContext.Provider
@@ -137,10 +140,6 @@ export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
         resetCounting,
         pomodoroTimes,
         changePomodoroTimes,
-        configurations,
-        toggleHideTimeOnTitle,
-        changeInitialRepeats,
-        toggleAlwaysStartWithInitialRepeats,
       }}
     >
       {children}

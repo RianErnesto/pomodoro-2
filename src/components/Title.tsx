@@ -2,9 +2,11 @@
 
 import { usePomodoro } from "@/hooks/usePomodoro.hook";
 import { secondsToLocalTimeString } from "@/utils/time.util";
+import useConfigurations from "@/hooks/useConfigurations.hook";
 
 const Title = () => {
-  const { status, currentCounterTime, configurations } = usePomodoro();
+  const { status, currentCounterTime } = usePomodoro();
+  const { configurations } = useConfigurations();
 
   const getStatus = () => {
     switch (status) {

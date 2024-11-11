@@ -1,5 +1,4 @@
 import { StatusType } from "./Status.type";
-import { PomodoroConfigurations } from "./Configuration.type";
 
 export type TimeType = {
   hours: number;
@@ -27,8 +26,4 @@ export type TimeContextType = {
     focusTime: number;
     restTime: number;
   };
-  configurations: PomodoroConfigurations;
-  toggleHideTimeOnTitle: (value: boolean) => void;
-  toggleAlwaysStartWithInitialRepeats: (value: boolean) => void;
-  changeInitialRepeats: (value: number) => void;
 };
