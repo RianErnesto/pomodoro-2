@@ -28,8 +28,8 @@ export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
     focusTime: number;
     restTime: number;
   }>({
-    focusTime: 1,
-    restTime: 1,
+    focusTime: 50,
+    restTime: 10,
   });
   const [currentCounterTime, setCurrentCounterTime] = useState<number>(
     minutesToSeconds(pomodoroTimes.focusTime)
