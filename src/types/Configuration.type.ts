@@ -14,4 +14,9 @@ export interface PomodoroConfigurations {
    * @default true
    */
   alwaysStartWithInitialRepeats: boolean;
+  /**
+   * Screen size
+   * @default "sm"
+   */
+  screenSize: "sm" | "md" | "lg";
 }

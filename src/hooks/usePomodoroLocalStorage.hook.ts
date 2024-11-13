@@ -42,6 +42,10 @@ export default function usePomodoroLocalStorage() {
     );
   }
 
+  function setScreenSize(size: "sm" | "md" | "lg") {
+    storage?.setItem(LocalStorageKeys.SCREEN_SIZE, size);
+  }
+
   function saveConfigurations(configurations: PomodoroConfigurations): void {
     storage?.setItem(
       LocalStorageKeys.POMODORO_CONFIGURATIONS,
@@ -97,5 +101,6 @@ export default function usePomodoroLocalStorage() {
     getConfigurations,
     getStatistics,
     clearStatistics,
+    setScreenSize,
   };
 }

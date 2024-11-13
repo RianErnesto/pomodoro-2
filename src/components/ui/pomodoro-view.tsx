@@ -6,10 +6,22 @@ import { getTimeFromSeconds, formatTime } from "@/utils/time.util";
 import { stringToCapitalized } from "@/utils/string.util";
 import Alarm from "../Alarm";
 import useAlarm from "@/hooks/useAlarm.hook";
+import useConfigurations from "@/hooks/useConfigurations.hook";
+import { cn } from "@/lib/utils";
 
 function Card({ children }: { children: ReactNode }) {
+  const { configurations } = useConfigurations();
+
   return (
-    <div className="border-4 border-black rounded-xl px-5 py-3 text-7xl dark:border-white">
+    <div
+      className={cn(
+        "border-4 border-black rounded-xl px-5 py-3 text-7xl dark:border-white",
+        {
+          "px-3 py-2 text-3xl": configurations.screenSize === "sm",
+          "px-7 py-4 text-9xl": configurations.screenSize === "lg",
+        }
+      )}
+    >
       {children}
     </div>
   );

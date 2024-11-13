@@ -3,12 +3,14 @@
 import { useEffect, createContext, ReactNode, useState } from "react";
 import usePomodoroLocalStorage from "@/hooks/usePomodoroLocalStorage.hook";
 import { PomodoroConfigurations } from "@/types/Configuration.type";
+import { DEFAULT_CONFIGURATION } from "@/constants/configuration.constant";
 
 type ConfigurationContextType = {
   changeInitialRepeats: (initialRepeats: number) => void;
   toggleAlwaysStartWithInitialRepeats: (value: boolean) => void;
   toggleHideTimeOnTitle: (value: boolean) => void;
   configurations: PomodoroConfigurations;
+  changeScreenSize: (size: "sm" | "md" | "lg") => void;
 };
 
 export const ConfigurationContext = createContext<ConfigurationContextType>(
@@ -18,7 +20,7 @@ export const ConfigurationContext = createContext<ConfigurationContextType>(
 const ConfigurationProvider = ({ children }: { children: ReactNode }) => {
   const { getConfigurations, saveConfigurations } = usePomodoroLocalStorage();
   const [configurations, setConfigurations] = useState<PomodoroConfigurations>(
-    getConfigurations()
+    DEFAULT_CONFIGURATION
   );
 
   function changeInitialRepeats(initialRepeats: number) {
@@ -42,15 +44,32 @@ const ConfigurationProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  const changeScreenSize = (size: "sm" | "md" | "lg") => {
+    setConfigurations((prevState) => ({
+      ...prevState,
+      screenSize: size,
+    }));
+  };
+
   useEffect(() => {
     saveConfigurations(configurations);
   }, [configurations]);
+
+  useEffect(() => {
+    const localStorageConfigs = getConfigurations();
+
+    setConfigurations((prevState) => ({
+      ...prevState,
+      ...localStorageConfigs,
+    }));
+  }, []);
 
   const value: ConfigurationContextType = {
     changeInitialRepeats,
     toggleAlwaysStartWithInitialRepeats,
     toggleHideTimeOnTitle,
     configurations,
+    changeScreenSize,
   };
 
   return (

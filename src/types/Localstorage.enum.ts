@@ -3,4 +3,5 @@ export enum LocalStorageKeys {
   TIME_RESTING = "time_resting",
   POMODORO_COUNTER = "pomodoro_counter",
   POMODORO_CONFIGURATIONS = "pomodoro_configurations",
+  SCREEN_SIZE = "screen_size",
 }

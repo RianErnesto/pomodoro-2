@@ -8,6 +8,13 @@ import { Label } from "./label";
 import { Plus, Minus } from "lucide-react";
 import { Input } from "./input";
 import useConfigurations from "@/hooks/useConfigurations.hook";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./select";
 
 export default function Menu() {
   const {
@@ -23,6 +30,7 @@ export default function Menu() {
     configurations,
     toggleAlwaysStartWithInitialRepeats,
     toggleHideTimeOnTitle,
+    changeScreenSize,
   } = useConfigurations();
 
   return (
@@ -30,6 +38,26 @@ export default function Menu() {
       <div className="flex flex-col gap-2">
         <h2 className="font-extralight">Configurations</h2>
         <Separator />
+        <div className="flex gap-2 items-center justify-between">
+          <Label className="text-sm flex-shrink-0" htmlFor="screen-size">
+            Display size
+          </Label>
+          <Select
+            defaultValue="md"
+            onValueChange={(value) =>
+              changeScreenSize(value as "sm" | "md" | "lg")
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Display size" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="sm">small</SelectItem>
+              <SelectItem value="md">medium (default)</SelectItem>
+              <SelectItem value="lg">large</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="flex gap-2 items-center justify-between">
           <Label className="text-sm" htmlFor="hide-timer">
             Hide Timer on Title
