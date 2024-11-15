@@ -6,6 +6,11 @@ export type TimeType = {
   seconds: number;
 };
 
+export type TimerType = {
+  focusTime: number;
+  restTime: number;
+};
+
 export type TimeContextType = {
   /**
    * Time to be displayed on the counter in seconds
@@ -22,8 +27,7 @@ export type TimeContextType = {
   increaseRepeats: () => void;
   decreaseRepeats: () => void;
   changePomodoroTimes: (focusTime: number, restTime: number) => void;
-  pomodoroTimes: {
-    focusTime: number;
-    restTime: number;
-  };
+  pomodoroTimes: TimerType;
+  timers: TimerType[];
+  createCustomTimer: (timers: TimerType) => void;
 };

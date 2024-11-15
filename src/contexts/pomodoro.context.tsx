@@ -1,6 +1,6 @@
 "use client";
 
-import { TimeContextType } from "@/types/Time.type";
+import { TimeContextType, TimerType } from "@/types/Time.type";
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { StatusType } from "@/types/Status.type";
 import { minutesToSeconds } from "@/utils/time.util";
@@ -8,6 +8,7 @@ import useAlarm from "@/hooks/useAlarm.hook";
 import { getDateDiffInSeconds, sumMinutesToDate } from "@/utils/date.util";
 import usePomodoroLocalStorage from "@/hooks/usePomodoroLocalStorage.hook";
 import useConfigurations from "@/hooks/useConfigurations.hook";
+import { DEFAULT_TIMERS } from "@/constants/timers.contants";
 
 export const TimeContext = createContext<TimeContextType>(
   {} as TimeContextType
@@ -35,6 +36,7 @@ export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
     minutesToSeconds(pomodoroTimes.focusTime)
   );
   const [runningDate, setRunningDate] = useState<Date>(new Date());
+  const [timers, setTimers] = useState<TimerType[]>([...DEFAULT_TIMERS]);
 
   const increaseRepeats = () => {
     setRepeats((prevState) => prevState + 1);
@@ -111,6 +113,10 @@ export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
     return;
   }
 
+  function createCustomTimer(timer: TimerType) {
+    setTimers((prevState) => [...prevState, timer]);
+  }
+
   useEffect(() => {
     if (status !== "stopped") {
       const interval = setInterval(() => {
@@ -140,6 +146,8 @@ export const PomodoroProvider = ({ children }: { children: ReactNode }) => {
         resetCounting,
         pomodoroTimes,
         changePomodoroTimes,
+        timers,
+        createCustomTimer,
       }}
     >
       {children}

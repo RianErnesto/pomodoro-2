@@ -1,47 +1,65 @@
 "use client";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup,
-} from "./select";
 import { usePomodoro } from "@/hooks/usePomodoro.hook";
-import { DEFAULT_TIMERS } from "@/constants/timers.contants";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Command, CommandGroup, CommandItem, CommandList } from "./command";
+import { useState } from "react";
+import { Button } from "./button";
+import { Check } from "lucide-react";
+import CreateTimerDialog from "./create-timer-dialog";
 
 export default function QuickTimeSelect() {
-  const { changePomodoroTimes, status } = usePomodoro();
+  const [open, setOpen] = useState(false);
+  const { changePomodoroTimes, timers, pomodoroTimes } = usePomodoro();
+  const [value, setValue] = useState(
+    `${pomodoroTimes.focusTime}-${pomodoroTimes.restTime}`
+  );
 
   function handleSelectChange(value: string) {
     const [workingTime, restingTime] = value.split("-").map(Number);
     changePomodoroTimes(workingTime, restingTime);
+    setOpen(false);
+    setValue(value);
   }
 
   return (
-    <Select
-      disabled={status !== "stopped"}
-      defaultValue="50-10"
-      onValueChange={handleSelectChange}
-    >
-      <SelectTrigger className="min-w-[180px]">
-        <SelectValue placeholder="Quick time seletion" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Time</SelectLabel>
-          {DEFAULT_TIMERS.map(({ workingTime, restingTime }) => (
-            <SelectItem
-              key={`${workingTime}-${restingTime}`}
-              value={`${workingTime}-${restingTime}`}
-            >
-              {`${workingTime}/${restingTime}`}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="secondary">
+          {value
+            ? `${
+                timers.find(
+                  (timer) => `${timer.focusTime}-${timer.restTime}` === value
+                )?.focusTime
+              }-${
+                timers.find(
+                  (timer) => `${timer.focusTime}-${timer.restTime}` === value
+                )?.restTime
+              }`
+            : "Quick time selection"}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <Command>
+          <CommandList>
+            <CommandGroup>
+              {timers.map((timer) => (
+                <CommandItem
+                  key={`${timer.focusTime}-${timer.restTime}`}
+                  value={`${timer.focusTime}-${timer.restTime}`}
+                  onSelect={handleSelectChange}
+                >
+                  {`${timer.focusTime}-${timer.restTime}`}
+                  {value === `${timer.focusTime}-${timer.restTime}` && (
+                    <Check className="w-4 h-4 ml-auto" />
+                  )}
+                </CommandItem>
+              ))}
+              <CreateTimerDialog />
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }

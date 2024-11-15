@@ -1,5 +1,7 @@
-export const DEFAULT_TIMERS = [
-  { workingTime: 25, restingTime: 5 },
-  { workingTime: 50, restingTime: 10 },
-  { workingTime: 75, restingTime: 15 },
+import { TimerType } from "@/types/Time.type";
+
+export const DEFAULT_TIMERS: TimerType[] = [
+  { focusTime: 25, restTime: 5 },
+  { focusTime: 50, restTime: 10 },
+  { focusTime: 75, restTime: 15 },
 ];

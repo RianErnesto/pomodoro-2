@@ -1,3 +1,5 @@
+export type ScreenSizesType = "sm" | "md" | "lg";
+
 export interface PomodoroConfigurations {
   /**
    * Hide time on title
@@ -16,7 +18,7 @@ export interface PomodoroConfigurations {
   alwaysStartWithInitialRepeats: boolean;
   /**
    * Screen size
-   * @default "sm"
+   * @default "md"
    */
-  screenSize: "sm" | "md" | "lg";
+  screenSize: ScreenSizesType;
 }

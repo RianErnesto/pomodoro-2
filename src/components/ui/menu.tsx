@@ -15,6 +15,92 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
+import { ScreenSizesEnum } from "@/enums/config.enums";
+import { ScreenSizesType } from "@/types/Configuration.type";
+
+function ScreenSize() {
+  const { changeScreenSize } = useConfigurations();
+
+  return (
+    <div className="flex gap-2 items-center justify-between">
+      <Label className="text-sm flex-shrink-0" htmlFor="screen-size">
+        Display size
+      </Label>
+      <Select
+        defaultValue="md"
+        onValueChange={(value) => changeScreenSize(value as ScreenSizesType)}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Display size" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={ScreenSizesEnum.SMALL}>small</SelectItem>
+          <SelectItem value={ScreenSizesEnum.MEDIUM}>
+            medium (default)
+          </SelectItem>
+          <SelectItem value={ScreenSizesEnum.LARGE}>large</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function TitleTimer() {
+  const { configurations, toggleHideTimeOnTitle } = useConfigurations();
+
+  return (
+    <div className="flex gap-2 items-center justify-between">
+      <Label className="text-sm" htmlFor="hide-timer">
+        Hide Timer on Title
+      </Label>
+      <Switch
+        checked={configurations.hideTimeOnTitle}
+        onCheckedChange={toggleHideTimeOnTitle}
+        id="hide-timer"
+      />
+    </div>
+  );
+}
+
+function StartWithInitialRepeats() {
+  const { configurations, toggleAlwaysStartWithInitialRepeats } =
+    useConfigurations();
+
+  return (
+    <div className="flex gap-2 items-center justify-between">
+      <Label className="text-sm" htmlFor="start-with-initial-repeats">
+        Start with Initial Repeats
+      </Label>
+      <Switch
+        checked={configurations.alwaysStartWithInitialRepeats}
+        onCheckedChange={toggleAlwaysStartWithInitialRepeats}
+        id="start-with-initial-repeats"
+      />
+    </div>
+  );
+}
+
+function InitialRepeats() {
+  const { configurations, changeInitialRepeats } = useConfigurations();
+
+  return (
+    <div className="flex flex-col items-start justify-center gap-1">
+      <Label className="text-sm" htmlFor="initial-repeats">
+        Initial Repeats
+      </Label>
+      <Input
+        type="number"
+        id="initial-repeats"
+        name="initial-repeats"
+        onChange={(e) => {
+          changeInitialRepeats(parseInt(e.target.value));
+        }}
+        defaultValue={configurations.initialRepeats}
+        placeholder="Initial repeats"
+      />
+    </div>
+  );
+}
 
 export default function Menu() {
   const {
@@ -25,74 +111,16 @@ export default function Menu() {
     decreaseRepeats,
     repeats,
   } = usePomodoro();
-  const {
-    changeInitialRepeats,
-    configurations,
-    toggleAlwaysStartWithInitialRepeats,
-    toggleHideTimeOnTitle,
-    changeScreenSize,
-  } = useConfigurations();
 
   return (
     <aside className="border-l border-black/15 h-full px-4 py-2 space-y-4 dark:border-white/15">
       <div className="flex flex-col gap-2">
         <h2 className="font-extralight">Configurations</h2>
         <Separator />
-        <div className="flex gap-2 items-center justify-between">
-          <Label className="text-sm flex-shrink-0" htmlFor="screen-size">
-            Display size
-          </Label>
-          <Select
-            defaultValue="md"
-            onValueChange={(value) =>
-              changeScreenSize(value as "sm" | "md" | "lg")
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Display size" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="sm">small</SelectItem>
-              <SelectItem value="md">medium (default)</SelectItem>
-              <SelectItem value="lg">large</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex gap-2 items-center justify-between">
-          <Label className="text-sm" htmlFor="hide-timer">
-            Hide Timer on Title
-          </Label>
-          <Switch
-            checked={configurations.hideTimeOnTitle}
-            onCheckedChange={toggleHideTimeOnTitle}
-            id="hide-timer"
-          />
-        </div>
-        <div className="flex gap-2 items-center justify-between">
-          <Label className="text-sm" htmlFor="start-with-initial-repeats">
-            Start with Initial Repeats
-          </Label>
-          <Switch
-            checked={configurations.alwaysStartWithInitialRepeats}
-            onCheckedChange={toggleAlwaysStartWithInitialRepeats}
-            id="start-with-initial-repeats"
-          />
-        </div>
-        <div className="flex flex-col items-start justify-center gap-1">
-          <Label className="text-sm" htmlFor="initial-repeats">
-            Initial Repeats
-          </Label>
-          <Input
-            type="number"
-            id="initial-repeats"
-            name="initial-repeats"
-            onChange={(e) => {
-              changeInitialRepeats(parseInt(e.target.value));
-            }}
-            defaultValue={configurations.initialRepeats}
-            placeholder="Initial repeats"
-          />
-        </div>
+        <ScreenSize />
+        <TitleTimer />
+        <StartWithInitialRepeats />
+        <InitialRepeats />
       </div>
       <Separator />
       <div className="flex flex-wrap items-center justify-start gap-1">

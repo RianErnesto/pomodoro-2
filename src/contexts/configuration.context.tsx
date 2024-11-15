@@ -2,7 +2,10 @@
 
 import { useEffect, createContext, ReactNode, useState } from "react";
 import usePomodoroLocalStorage from "@/hooks/usePomodoroLocalStorage.hook";
-import { PomodoroConfigurations } from "@/types/Configuration.type";
+import {
+  PomodoroConfigurations,
+  ScreenSizesType,
+} from "@/types/Configuration.type";
 import { DEFAULT_CONFIGURATION } from "@/constants/configuration.constant";
 
 type ConfigurationContextType = {
@@ -10,7 +13,7 @@ type ConfigurationContextType = {
   toggleAlwaysStartWithInitialRepeats: (value: boolean) => void;
   toggleHideTimeOnTitle: (value: boolean) => void;
   configurations: PomodoroConfigurations;
-  changeScreenSize: (size: "sm" | "md" | "lg") => void;
+  changeScreenSize: (size: ScreenSizesType) => void;
 };
 
 export const ConfigurationContext = createContext<ConfigurationContextType>(
@@ -44,7 +47,7 @@ const ConfigurationProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
-  const changeScreenSize = (size: "sm" | "md" | "lg") => {
+  const changeScreenSize = (size: ScreenSizesType) => {
     setConfigurations((prevState) => ({
       ...prevState,
       screenSize: size,
