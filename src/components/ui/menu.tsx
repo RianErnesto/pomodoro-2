@@ -45,6 +45,46 @@ function ScreenSize() {
   );
 }
 
+function DisplayVideo() {
+  const {
+    configurations: { displayVideo },
+    toggleDisplayVideo,
+  } = useConfigurations();
+
+  return (
+    <div className="flex gap-2 items-center justify-between">
+      <Label className="text-sm" htmlFor="hide-video">
+        Display Video
+      </Label>
+      <Switch
+        checked={displayVideo}
+        onCheckedChange={toggleDisplayVideo}
+        id="hide-video"
+      />
+    </div>
+  );
+}
+
+function MuteVideo() {
+  const {
+    configurations: { muteVideo },
+    toggleMuteVideo,
+  } = useConfigurations();
+
+  return (
+    <div className="flex gap-2 items-center justify-between">
+      <Label className="text-sm" htmlFor="mute-video">
+        Mute Video
+      </Label>
+      <Switch
+        checked={muteVideo}
+        onCheckedChange={toggleMuteVideo}
+        id="mute-video"
+      />
+    </div>
+  );
+}
+
 function TitleTimer() {
   const { configurations, toggleHideTimeOnTitle } = useConfigurations();
 
@@ -118,6 +158,8 @@ export default function Menu() {
         <h2 className="font-extralight">Configurations</h2>
         <Separator />
         <ScreenSize />
+        <DisplayVideo />
+        <MuteVideo />
         <TitleTimer />
         <StartWithInitialRepeats />
         <InitialRepeats />

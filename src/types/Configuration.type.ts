@@ -7,6 +7,16 @@ export interface PomodoroConfigurations {
    */
   hideTimeOnTitle: boolean;
   /**
+   * Display video on resting moment
+   * @default true
+   */
+  displayVideo: boolean;
+  /**
+   * Mute video on resting moment
+   * @default false
+   */
+  muteVideo: boolean;
+  /**
    * Initial repeats
    * @default 1
    */

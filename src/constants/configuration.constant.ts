@@ -5,4 +5,6 @@ export const DEFAULT_CONFIGURATION: PomodoroConfigurations = {
   initialRepeats: 1,
   alwaysStartWithInitialRepeats: true,
   screenSize: "md",
+  displayVideo: true,
+  muteVideo: false,
 };

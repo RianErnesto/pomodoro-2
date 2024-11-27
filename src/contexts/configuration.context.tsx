@@ -14,6 +14,8 @@ type ConfigurationContextType = {
   toggleHideTimeOnTitle: (value: boolean) => void;
   configurations: PomodoroConfigurations;
   changeScreenSize: (size: ScreenSizesType) => void;
+  toggleDisplayVideo: (value: boolean) => void;
+  toggleMuteVideo: (value: boolean) => void;
 };
 
 export const ConfigurationContext = createContext<ConfigurationContextType>(
@@ -47,6 +49,20 @@ const ConfigurationProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  const toggleDisplayVideo = (value: boolean) => {
+    setConfigurations((prevState) => ({
+      ...prevState,
+      displayVideo: value,
+    }));
+  };
+
+  const toggleMuteVideo = (value: boolean) => {
+    setConfigurations((prevState) => ({
+      ...prevState,
+      muteVideo: value,
+    }));
+  };
+
   const changeScreenSize = (size: ScreenSizesType) => {
     setConfigurations((prevState) => ({
       ...prevState,
@@ -73,6 +89,8 @@ const ConfigurationProvider = ({ children }: { children: ReactNode }) => {
     toggleHideTimeOnTitle,
     configurations,
     changeScreenSize,
+    toggleDisplayVideo,
+    toggleMuteVideo,
   };
 
   return (

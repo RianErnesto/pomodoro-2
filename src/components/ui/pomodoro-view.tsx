@@ -15,7 +15,7 @@ function Card({ children }: { children: ReactNode }) {
   return (
     <div
       className={cn(
-        "border-4 border-black rounded-xl px-5 py-3 text-7xl dark:border-white",
+        "border-4 border-black bg-black/60 rounded-xl px-5 py-3 text-7xl dark:border-white",
         {
           "px-3 py-2 text-3xl": configurations.screenSize === "sm",
           "px-7 py-4 text-9xl": configurations.screenSize === "lg",
@@ -32,7 +32,7 @@ export default function PomodoroView() {
   const { isPlaying, audioRef, onAudioEnded } = useAlarm();
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center relative">
       <audio
         onEnded={onAudioEnded}
         ref={audioRef}
